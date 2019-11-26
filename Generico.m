@@ -1,21 +1,23 @@
 clear; clc; close all;
-Entradas = load('Entradas.txt');
-Saidas = load('Saidas.txt');
+load('Dados_Aprox_Trein.mat')
+load('Dados_Aprox_Val.mat')
+Entradas = x;
+Saidas = yd;
 [Linhas, Colunas] = size(Entradas);
 Neuronios = input('Quantos neurônios na camada oculta? ');
-Pesos = rand(Colunas, Neuronios); %[-0.424 -0.740 -0.961; 0.358 -0.577 -0.469]; 
-Pesos_Outros_Neuronios = rand(1, Neuronios); %[-0.017 -0.893 0.148];
+Pesos = rand(Colunas, Neuronios);
+Pesos_Outros_Neuronios = rand(1, Neuronios); 
 Momento = 1;
 iter=0;
-n=0.03;
+n=0.0025;
 MAbsoluta=1;
 Contador=0;
-precisao=0.05;
+precisao=0.0003;
 while(MAbsoluta>=precisao && iter<10000000)
     iter=iter+1;
     Contador = Contador + 1;
     
-    U = Entradas(:,1)*Pesos(1,:) + Entradas(:,2)*Pesos(2,:);
+    U = Entradas(:,1)*Pesos(1,:) + Entradas(:,2)*Pesos(2,:) + Entradas(:,3)*Pesos(3,:);
     
     [Sigmoid_Oculta] = Sigmoid(U);%Função Sigmoid das entradas para os neurônios ocultos
     [DerivadaOculta] = DerivadaSigmoid(Sigmoid_Oculta); %Derivada da Sigmoid Oculta
@@ -23,9 +25,10 @@ while(MAbsoluta>=precisao && iter<10000000)
     Saida = Sigmoid_Oculta(:,:)*Pesos_Outros_Neuronios';%"Ativação" dos neurônios ocultos pra saida
     
     [Sigmoid_OcultaSaida] = Sigmoid(Saida);%Função Sigmoid dos ocultos para a saida
-
-    Erro = Saidas(:,1) - Sigmoid_OcultaSaida(:,1) ;
-    MAbsoluta = sum(abs(Erro(:,1)))/Linhas
+    Erro = Saidas(:,1) - Sigmoid_OcultaSaida(:,1);
+%     MAbsoluta = sum(abs(Erro(:,1)))/Linhas;
+%     MAbsoluta = sum((Erro(:,1)).^2)/Linhas
+    MAbsoluta = mean(Erro.^2)
     ParaPlotarGrafico(Contador) = MAbsoluta;
     [DerivadaSaida] = DerivadaSigmoid(Sigmoid_OcultaSaida);%Derivada da Sigmoid Saida
     
@@ -60,13 +63,59 @@ while(MAbsoluta>=precisao && iter<10000000)
 %     return
 % break
 end
-
-U = Entradas(:,1)*Pesos(1,:) + Entradas(:,2)*Pesos(2,:);
-
+% Validação do treinamento
 [Ativacao] = Sigmoid(U);
 SaidaFinal = Ativacao*Pesos_Outros_Neuronios';
 [Validacao] = Sigmoid(SaidaFinal)
 
+% Validação dados classificação
+
+UValidacao = xv(:,1)*Pesos(1,:) + xv(:,2)*Pesos(2,:) + xv(:,3)*Pesos(3,:);
+[AtivacaoValidacao] = Sigmoid(UValidacao);
+[SaidaFinalDadosClassificacao] = AtivacaoValidacao*Pesos_Outros_Neuronios';
+[ValidacaodaClassificacao]=Sigmoid(SaidaFinalDadosClassificacao)
+
+figure (1)
+X = [1:1:iter];
+plot(X,ParaPlotarGrafico)
+
+figure (2)
+[Linhas, Colunas] = size(xv);
+for k=1:Linhas
+   if Validacao(k,1)>=0.5
+       plot3(xv(k,1), xv(k,2), xv(k,3), 'go'); grid on; hold on;
+   else
+       plot3(xv(k,1), xv(k,2), xv(k,3), 'bs'); grid on; hold on;
+   end
+end
+hold on;
+P = [0:0.01:1];
+
+% P2=(Pesos(1,1)*Pesos(2,1)*P)/Pesos(3,1);
+% P3=(Pesos(1,2)*Pesos(2,2)*P)/Pesos(3,2);
+% P4=(Pesos(1,3)*Pesos(2,3)*P)/Pesos(3,3);
+% P5=(Pesos(1,4)*Pesos(2,4)*P)/Pesos(3,4);
+% P6=(Pesos(1,5)*Pesos(2,5)*P)/Pesos(3,5);
+% P7=(Pesos(1,6)*Pesos(2,6)*P)/Pesos(3,6);
+% P8=(Pesos(1,7)*Pesos(2,7)*P)/Pesos(3,7);
+% P9=(Pesos(1,8)*Pesos(2,8)*P)/Pesos(3,8);
+% P10=(Pesos(1,9)*Pesos(2,9)*P)/Pesos(3,9);
+% P11=(Pesos(1,10)*Pesos(2,10)*P)/Pesos(3,10);
+% plot3(P,F,P2,'r'); hold on;
+% plot3(P,F,P3,'b'); hold on;
+% plot3(P,F,P4,'m'); hold on;
+% plot3(P,F,P5,'--'); hold on;
+% plot3(P,F,P6,'bs'); hold on;
+% plot3(P,F,P7,'*'); hold on;
+% plot3(P,F,P8,'go'); hold on;
+% plot3(P,F,P9,'g'); hold on;
+% plot3(P,F,P10,'y'); hold on;
+% plot3(P,F,P11,'+'); hold on;
+
+
+
+
+return
 figure (1)
 hold on;
 P = [0:0.01:1];
@@ -103,5 +152,3 @@ end
 figure (2)
 X = [1:1:iter];
 plot(X,ParaPlotarGrafico)
-%Fazer a topologia da rede e nas linhas dos pesos colocar: W1, W2..., até
-%as ultimas linhas de pesos e aqui no código imprimir os pesos de 1 à 9
