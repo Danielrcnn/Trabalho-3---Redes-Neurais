@@ -4,7 +4,7 @@ load('Dados_Aprox_Val.mat')
 Entradas = x;
 Saidas = yd;
 [Linhas, Colunas] = size(Entradas);
-Neuronios = input('Quantos neurônios na camada oculta? ');
+Neuronios = input('Quantos neurÃ´nios na camada oculta? ');
 Pesos = rand(Colunas, Neuronios);
 Pesos_Outros_Neuronios = rand(1, Neuronios); 
 Momento = 1;
@@ -15,14 +15,14 @@ precisao=0.0002;
 while(MAbsoluta>=precisao && iter<10000000)
     iter=iter+1;
     
-    U = Entradas(:,1)*Pesos(1,:) + Entradas(:,2)*Pesos(2,:) + Entradas(:,3)*Pesos(3,:); %A unica parte do código que não esta genérica
+    U = Entradas(:,1)*Pesos(1,:) + Entradas(:,2)*Pesos(2,:) + Entradas(:,3)*Pesos(3,:); %A unica parte do cÃ³digo que nÃ£o esta genÃ©rica
     
-    [Sigmoid_Oculta] = Sigmoid(U);%Função Sigmoid das entradas para os neurônios ocultos
+    [Sigmoid_Oculta] = Sigmoid(U);%FunÃ§Ã£o Sigmoid das entradas para os neurÃ´nios ocultos
     [DerivadaOculta] = DerivadaSigmoid(Sigmoid_Oculta); %Derivada da Sigmoid Oculta
     
-    Saida = Sigmoid_Oculta(:,:)*Pesos_Outros_Neuronios';%"Ativação" dos neurônios ocultos pra saida
+    Saida = Sigmoid_Oculta(:,:)*Pesos_Outros_Neuronios';%"AtivaÃ§Ã£o" dos neurÃ´nios ocultos pra saida
     
-    [Sigmoid_OcultaSaida] = Sigmoid(Saida);%Função Sigmoid dos ocultos para a saida
+    [Sigmoid_OcultaSaida] = Sigmoid(Saida);%FunÃ§Ã£o Sigmoid dos ocultos para a saida
     Erro = Saidas(:,1) - Sigmoid_OcultaSaida(:,1);
     MAbsoluta = mean(Erro.^2)
     ParaPlotarGrafico(iter) = MAbsoluta;
@@ -43,22 +43,22 @@ while(MAbsoluta>=precisao && iter<10000000)
            SomatorioDaSaidaDeltaOculto(k,1) = sum(SaidaDeltaOculto(k,:));
     end
     
-    Pesos_Outros_Neuronios = (Pesos_Outros_Neuronios*Momento)+(SomatorioDaSaidaDeltaOculto*n)'; %Atualização dos pesos da Saida pra Oculta
+    Pesos_Outros_Neuronios = (Pesos_Outros_Neuronios*Momento)+(SomatorioDaSaidaDeltaOculto*n)'; %AtualizaÃ§Ã£o dos pesos da Saida pra Oculta
     
     [l,c]=size(DeltaOculto);
     for i=1:Colunas
         for k=1:c
-            DeltaEntrada(i,k) = dot(DeltaOculto(:,k),Entradas(:,i)'); %Vou deixar isso por enquanto porque Tui que fez e eu não entendi muito bem, depois eu vejo isso
+            DeltaEntrada(i,k) = dot(DeltaOculto(:,k),Entradas(:,i)'); %Vou deixar isso por enquanto porque Tui que fez e eu nÃ£o entendi muito bem, depois eu vejo isso
         end
     end
      Pesos = (Pesos*Momento)+(DeltaEntrada*n);
 end
-% Validação do treinamento
+% ValidaÃ§Ã£o do treinamento
 [Ativacao] = Sigmoid(U);
 SaidaFinal = Ativacao*Pesos_Outros_Neuronios';
 [Validacao] = Sigmoid(SaidaFinal);
 
-% Validação dados classificação
+% ValidaÃ§Ã£o dados classificaÃ§Ã£o
 UValidacao = xv(:,1)*Pesos(1,:) + xv(:,2)*Pesos(2,:) + xv(:,3)*Pesos(3,:);
 [AtivacaoValidacao] = Sigmoid(UValidacao);
 [SaidaFinalDadosClassificacao] = AtivacaoValidacao*Pesos_Outros_Neuronios';
@@ -66,7 +66,7 @@ UValidacao = xv(:,1)*Pesos(1,:) + xv(:,2)*Pesos(2,:) + xv(:,3)*Pesos(3,:);
 
 figure (1)
 X = [1:1:iter];
-plot(X,ParaPlotarGrafico), title('EQM x Épocas de treinamento'),xlabel('Épocas'),ylabel('MSE')
+plot(X,ParaPlotarGrafico), title('EQM x Ã‰pocas de treinamento'),xlabel('Ã‰pocas'),ylabel('MSE')
 figure(2)
 VetorQualquer = [1:1:length(ydv)];
 plot(VetorQualquer,ydv,'o',VetorQualquer,ValidacaodaClassificacao,'*r')
