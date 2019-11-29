@@ -15,12 +15,12 @@ while(MAbsoluta>=precisao && iter<10000000)
     
     U = Entradas(:,1)*Pesos(1,:) + Entradas(:,2)*Pesos(2,:);
     
-    [Sigmoid_Oculta] = Sigmoid(U);%Função Sigmoid das entradas para os neurônios ocultos
+    [Sigmoid_Oculta] = Sigmoid(U);%FunÃ§Ã£o Sigmoid das entradas para os neurÃ´nios ocultos
     [DerivadaOculta] = DerivadaSigmoid(Sigmoid_Oculta); %Derivada da Sigmoid Oculta
     
-    Saida = Sigmoid_Oculta(:,:)*Pesos_Outros_Neuronios';%"Ativação" dos neurônios ocultos pra saida
+    Saida = Sigmoid_Oculta(:,:)*Pesos_Outros_Neuronios';%"AtivaÃ§Ã£o" dos neurÃ´nios ocultos pra saida
     
-    [Sigmoid_OcultaSaida] = Sigmoid(Saida);%Função Sigmoid dos ocultos para a saida
+    [Sigmoid_OcultaSaida] = Sigmoid(Saida);%FunÃ§Ã£o Sigmoid dos ocultos para a saida
 
     Erro = Saidas(:,1) - Sigmoid_OcultaSaida(:,1);
     MAbsoluta = mean(Erro.^2);
@@ -42,12 +42,12 @@ while(MAbsoluta>=precisao && iter<10000000)
            SomatorioDaSaidaDeltaOculto(k,1) = sum(SaidaDeltaOculto(k,:));
     end
     
-    Pesos_Outros_Neuronios = (Pesos_Outros_Neuronios*Momento)+(SomatorioDaSaidaDeltaOculto*n)'; %Atualização dos pesos da Saida pra Oculta
+    Pesos_Outros_Neuronios = (Pesos_Outros_Neuronios*Momento)+(SomatorioDaSaidaDeltaOculto*n)'; %AtualizaÃ§Ã£o dos pesos da Saida pra Oculta
     
     [l,c]=size(DeltaOculto);
     for i=1:Colunas
         for k=1:c
-            DeltaEntrada(i,k) = dot(DeltaOculto(:,k),Entradas(:,i)'); %Vou deixar isso por enquanto porque Tui que fez e eu não entendi muito bem, depois eu vejo isso
+            DeltaEntrada(i,k) = dot(DeltaOculto(:,k),Entradas(:,i)'); %Vou deixar isso por enquanto porque Tui que fez e eu nÃ£o entendi muito bem, depois eu vejo isso
         end
     end
 
@@ -57,7 +57,7 @@ end
 
 % for i=1:Linhas
 %     for k=1:3
-%         U(i,k) = Entradas(i,1)*Pesos(1,k) + Entradas(i,2)*Pesos(2,k);%Ativação camada oculta
+%         U(i,k) = Entradas(i,1)*Pesos(1,k) + Entradas(i,2)*Pesos(2,k);%AtivaÃ§Ã£o camada oculta
 %     end
 % end
 
@@ -71,6 +71,6 @@ plot(VetorQualquer,Saidas,'o',VetorQualquer,Validacao,'*r')
 
 figure (2)
 X = [1:1:iter];
-plot(X,ParaPlotarGrafico), title('MSE x Épocas de treinamento'),xlabel('Épocas'),ylabel('MSE')
-%Fazer a topologia da rede e nas linhas dos pesos colocar: W1, W2..., até
-%as ultimas linhas de pesos e aqui no código imprimir os pesos de 1 à 9
+plot(X,ParaPlotarGrafico), title('MSE x Ã‰pocas de treinamento'),xlabel('Ã‰pocas'),ylabel('MSE')
+%Fazer a topologia da rede e nas linhas dos pesos colocar: W1, W2..., atÃ©
+%as ultimas linhas de pesos e aqui no cÃ³digo imprimir os pesos de 1 Ã  9
